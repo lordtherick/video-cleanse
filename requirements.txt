@@ -1,0 +1,4 @@
+# torch/torchvision are installed separately in the Dockerfile from the PyTorch
+# index (CPU wheels by default) so pip doesn't pull the multi-GB CUDA build.
+easyocr
+opencv-python-headless

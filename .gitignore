@@ -1,0 +1,18 @@
+# Environment files (secrets/local settings) - keep the template
+.env
+.env.*
+!.env.example
+
+# Video files (inputs and redacted outputs)
+*.mp4
+*.MP4
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.swp
+*~
+.DS_Store
+__pycache__/
+*.pyc

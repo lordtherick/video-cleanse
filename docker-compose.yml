@@ -1,0 +1,8 @@
+services:
+  video-cleanse:
+    build: .
+    image: video-cleanse:latest
+    env_file: .env
+    volumes:
+      # Folder holding the input video; the redacted output is written here too
+      - ${VIDEO_DIR:-.}:/data
