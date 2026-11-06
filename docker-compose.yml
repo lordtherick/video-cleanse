@@ -1,8 +1,21 @@
 services:
   video-cleanse:
-    build: .
+    build:
+      context: .
+      args:
+        TORCH_INDEX: https://download.pytorch.org/whl/cu128
     image: video-cleanse:latest
     env_file: .env
+    environment:
+      - NVIDIA_DRIVER_CAPABILITIES=all
     volumes:
       # Folder holding the input video; the redacted output is written here too
       - ${VIDEO_DIR:-.}:/data
+      - ./video_cleanse.py:/app/video_cleanse.py
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu, video, compute, utility]

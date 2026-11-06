@@ -1,4 +1,4 @@
-FROM python:3.14-slim
+FROM python:3.12-slim
 
 ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
@@ -9,12 +9,13 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends ffmpeg libgl1 libglib2.0-0 \
  && rm -rf /var/lib/apt/lists/*
 
-# CPU-only PyTorch keeps the image far smaller (Docker Desktop on a Mac has no CUDA).
-# Build with --build-arg TORCH_INDEX=https://download.pytorch.org/whl/cu121 for an NVIDIA host.
-ARG TORCH_INDEX=https://download.pytorch.org/whl/cpu
+# CUDA 12.8 PyTorch wheels support NVIDIA Blackwell (RTX 50-series sm_120) as well as older GPUs.
+# Override with --build-arg TORCH_INDEX=https://download.pytorch.org/whl/cpu for CPU-only hosts.
+ARG TORCH_INDEX=https://download.pytorch.org/whl/cu128
+RUN pip install --index-url ${TORCH_INDEX} torch torchvision
+
 COPY requirements.txt /tmp/requirements.txt
-RUN pip install --index-url ${TORCH_INDEX} torch torchvision \
- && pip install -r /tmp/requirements.txt \
+RUN pip install -r /tmp/requirements.txt \
  && pip uninstall -y opencv-python || true \
  && pip install --force-reinstall --no-deps opencv-python-headless
 
